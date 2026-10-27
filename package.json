@@ -1,0 +1,13 @@
+{
+  "name": "lessons",
+  "version": "1.2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test",
+    "check": "node --check public/app.js && node --check public/model.js && node --check server.mjs",
+    "android:build": "bash scripts/build-apk.sh",
+    "android:test": "bash scripts/test-reminders.sh"
+  }
+}

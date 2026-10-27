@@ -1,0 +1,57 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'ru.uroki.app'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'ru.uroki.app'
+        minSdk 26
+        targetSdk 35
+        versionCode 3
+        versionName '1.2.0'
+    }
+
+    buildTypes {
+        debug {
+            // Installs alongside the downloaded app, preserving its existing data.
+            applicationIdSuffix '.dev'
+            versionNameSuffix '-dev'
+            manifestPlaceholders = [appLabel: 'Уроки · разработка']
+        }
+        release {
+            minifyEnabled false
+            manifestPlaceholders = [appLabel: 'Уроки']
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidStudioManifest.xml'
+            java.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = [layout.buildDirectory.dir('generated/web-assets')]
+        }
+        test {
+            java.srcDirs = ['../test/android-junit']
+        }
+    }
+}
+
+// Bundle the same web sources used by the APK, without maintaining a second copy.
+def syncWebAssets = tasks.register('syncWebAssets', Sync) {
+    from rootProject.file('public')
+    into layout.buildDirectory.dir('generated/web-assets/web')
+}
+tasks.named('preBuild').configure { dependsOn syncWebAssets }
+
+dependencies {
+    testImplementation 'junit:junit:4.13.2'
+}
